@@ -1,0 +1,48 @@
+{{define "row.html"}}
+<tr id="row-{{.ID}}">
+  <td>
+    <a href="/schedules/{{.ID}}"
+       hx-get="/schedules/{{.ID}}"
+       hx-target="#detail-panel"
+       hx-swap="innerHTML"
+       class="mono link">{{.ID}}</a>
+  </td>
+  <td class="mono">{{.WorkflowType}}</td>
+  <td class="mono small">{{.Spec | truncate 40}}</td>
+  <td>
+    <span class="{{statusCls .Paused}}">
+      {{if .Paused}}Paused{{else}}Active{{end}}
+    </span>
+  </td>
+  <td>{{if gt (len .NextActionTimes) 0}}{{formatTime (index .NextActionTimes 0)}}{{else}}—{{end}}</td>
+  <td>{{if gt (len .RecentActions) 0}}{{ago (index .RecentActions 0)}}{{else}}—{{end}}</td>
+  <td class="col-actions">
+    <div class="action-group">
+      {{if .Paused}}
+        <button class="btn btn-xs btn-success"
+                hx-post="/schedules/{{.ID}}/unpause"
+                hx-target="#row-{{.ID}}"
+                hx-swap="outerHTML"
+                title="Resume">▶</button>
+      {{else}}
+        <button class="btn btn-xs btn-warn"
+                hx-post="/schedules/{{.ID}}/pause"
+                hx-target="#row-{{.ID}}"
+                hx-swap="outerHTML"
+                title="Pause">⏸</button>
+      {{end}}
+      <button class="btn btn-xs"
+              hx-post="/schedules/{{.ID}}/trigger"
+              hx-target="#row-{{.ID}}"
+              hx-swap="outerHTML"
+              title="Trigger now">⚡</button>
+      <button class="btn btn-xs btn-danger"
+              hx-delete="/schedules/{{.ID}}"
+              hx-target="#row-{{.ID}}"
+              hx-swap="outerHTML"
+              hx-confirm="Delete schedule {{.ID}}?"
+              title="Delete">✕</button>
+    </div>
+  </td>
+</tr>
+{{end}}

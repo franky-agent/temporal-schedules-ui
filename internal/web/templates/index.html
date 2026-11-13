@@ -1,0 +1,54 @@
+{{template "base.html" .}}
+
+{{define "content"}}
+<section id="create-panel"></section>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Schedules</h2>
+    <div class="card-actions">
+      <button class="btn btn-ghost btn-sm"
+              hx-get="/schedules"
+              hx-target="#schedule-rows"
+              hx-swap="outerHTML"
+              hx-trigger="click">
+        ↻ Refresh
+      </button>
+      <span class="muted" id="last-refresh">live</span>
+    </div>
+  </div>
+
+  {{if .Error}}
+    <div class="alert alert-error">
+      Could not reach Temporal: {{.Error}}. Is <code>temporal</code> running on
+      <code>$TEMPORAL_HOST_PORT</code> (default localhost:7233)?
+    </div>
+  {{end}}
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Schedule ID</th>
+        <th>Workflow</th>
+        <th>Spec</th>
+        <th>Status</th>
+        <th>Next run</th>
+        <th>Last run</th>
+        <th class="col-actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="schedule-rows">
+      {{template "rows.html" .}}
+    </tbody>
+  </table>
+</section>
+
+<script>
+  // Light auto-refresh: poll the table every 10s without a full page reload.
+  document.addEventListener('DOMContentLoaded', () => {
+    setInterval(() => {
+      htmx.trigger('#schedule-rows', 'refresh');
+    }, 10000);
+  });
+</script>
+{{end}}

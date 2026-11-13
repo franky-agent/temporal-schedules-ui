@@ -1,0 +1,15 @@
+{{define "rows.html"}}
+<tbody id="schedule-rows" hx-get="/schedules" hx-trigger="refresh" hx-swap="outerHTML">
+  {{if not .Schedules}}
+    <tr class="empty-row">
+      <td colspan="7" class="empty">
+        No schedules yet. Click <strong>+ New Schedule</strong> to create one.
+      </td>
+    </tr>
+  {{else}}
+    {{range .Schedules}}
+      {{template "row.html" .}}
+    {{end}}
+  {{end}}
+</tbody>
+{{end}}

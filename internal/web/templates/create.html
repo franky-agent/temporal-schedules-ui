@@ -1,0 +1,53 @@
+{{define "create.html"}}
+<form class="create-form"
+      hx-post="/schedules"
+      hx-target="#schedule-rows"
+      hx-swap="outerHTML"
+      onsubmit="this.reset()">
+  <div class="form-grid">
+    <label>
+      <span>Schedule ID</span>
+      <input type="text" name="id" required placeholder="nightly-report" class="mono">
+    </label>
+    <label>
+      <span>Workflow type</span>
+      <input type="text" name="workflow" required placeholder="SendEmailWorkflow" value="SendEmailWorkflow" class="mono">
+    </label>
+    <label>
+      <span>Workflow ID</span>
+      <input type="text" name="workflow_id" placeholder="nightly-report-run (optional)" class="mono">
+    </label>
+    <label>
+      <span>Task queue</span>
+      <input type="text" name="task_queue" value="schedules-demo" class="mono">
+    </label>
+    <label>
+      <span>Cron expression</span>
+      <input type="text" name="cron" placeholder="0 2 * * *  (5-field cron)" class="mono">
+    </label>
+    <label>
+      <span>or Interval</span>
+      <input type="text" name="interval" placeholder="5m  /  1h  /  30s" class="mono">
+    </label>
+    <label class="full">
+      <span>Workflow arg (optional)</span>
+      <input type="text" name="args" placeholder="e.g. user@example.com" class="mono">
+    </label>
+    <label class="full">
+      <span>Note</span>
+      <input type="text" name="note" placeholder="why this schedule exists">
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="paused">
+      <span>Start paused</span>
+    </label>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Create schedule</button>
+    <button type="button" class="btn btn-ghost"
+            onclick="document.getElementById('create-panel').innerHTML=''">Cancel</button>
+  </div>
+  <p class="form-hint muted">Fill in either a <strong>cron</strong> expression or an <strong>interval</strong> (Go duration like <code>5m</code>).</p>
+</form>
+{{end}}

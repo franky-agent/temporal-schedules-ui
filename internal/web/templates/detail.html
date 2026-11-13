@@ -1,0 +1,71 @@
+{{define "detail.html"}}
+<div id="detail-panel" class="detail-card">
+  <div class="detail-head">
+    <h2 class="mono">{{.D.ID}}</h2>
+    <span class="{{statusCls .D.Paused}}">
+      {{if .D.Paused}}Paused{{else}}Active{{end}}
+    </span>
+    <button class="btn btn-ghost btn-sm"
+            onclick="document.getElementById('detail-panel').innerHTML=''"
+            style="margin-left:auto">Close</button>
+  </div>
+
+  <dl class="kv">
+    <dt>Workflow</dt><dd class="mono">{{.D.WorkflowType}}</dd>
+    <dt>Workflow ID</dt><dd class="mono">{{.D.WorkflowID}}</dd>
+    <dt>Task queue</dt><dd class="mono">{{.D.TaskQueue}}</dd>
+    <dt>Spec</dt><dd class="mono">{{.D.Spec}}</dd>
+    <dt>Overlap policy</dt><dd>{{.D.Overlap}}</dd>
+    <dt>Pause on failure</dt><dd>{{if .D.PausedOnFailure}}yes{{else}}no{{end}}</dd>
+    <dt>Note</dt><dd>{{if .D.Note}}{{.D.Note}}{{else}}—{{end}}</dd>
+    <dt>Created</dt><dd>{{formatDate .D.CreatedAt}}</dd>
+    <dt>Last updated</dt><dd>{{formatDate .D.LastUpdateAt}}</dd>
+  </dl>
+
+  <div class="stats">
+    <div class="stat"><span class="stat-num">{{.D.NumActions}}</span><span class="stat-label">actions taken</span></div>
+    <div class="stat"><span class="stat-num">{{.D.NumSkipped}}</span><span class="stat-label">skipped (overlap)</span></div>
+    <div class="stat"><span class="stat-num">{{.D.NumMissed}}</span><span class="stat-label">missed (catchup)</span></div>
+  </div>
+
+  {{if .D.NextActionTimes}}
+    <h3>Upcoming runs</h3>
+    <ul class="time-list">
+      {{range .D.NextActionTimes}}<li>{{formatDate .}}</li>{{end}}
+    </ul>
+  {{end}}
+
+  {{if .D.RecentActions}}
+    <h3>Recent runs</h3>
+    <ul class="time-list">
+      {{range .D.RecentActions}}<li>{{formatDate .}} <span class="muted">({{ago .}})</span></li>{{end}}
+    </ul>
+  {{end}}
+
+  <div class="detail-actions">
+    {{if .D.Paused}}
+      <button class="btn btn-success btn-sm"
+              hx-post="/schedules/{{.D.ID}}/unpause"
+              hx-target="#row-{{.D.ID}}"
+              hx-swap="outerHTML"
+              onclick="this.closest('#detail-panel').innerHTML=''">▶ Unpause</button>
+    {{else}}
+      <button class="btn btn-warn btn-sm"
+              hx-post="/schedules/{{.D.ID}}/pause"
+              hx-target="#row-{{.D.ID}}"
+              hx-swap="outerHTML"
+              onclick="this.closest('#detail-panel').innerHTML=''">⏸ Pause</button>
+    {{end}}
+    <button class="btn btn-sm"
+            hx-post="/schedules/{{.D.ID}}/trigger"
+            hx-target="#row-{{.D.ID}}"
+            hx-swap="outerHTML">⚡ Trigger now</button>
+    <button class="btn btn-danger btn-sm"
+            hx-delete="/schedules/{{.D.ID}}"
+            hx-target="#row-{{.D.ID}}"
+            hx-swap="outerHTML"
+            hx-confirm="Delete schedule {{.D.ID}}?"
+            onclick="this.closest('#detail-panel').innerHTML=''">✕ Delete</button>
+  </div>
+</div>
+{{end}}
