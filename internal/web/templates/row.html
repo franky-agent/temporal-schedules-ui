@@ -8,7 +8,7 @@
        class="mono link">{{.ID}}</a>
   </td>
   <td class="mono">{{.WorkflowType}}</td>
-  <td class="mono small">{{.Spec | truncate 40}}</td>
+  <td class="mono small">{{truncate .Spec 40}}</td>
   <td>
     <span class="{{statusCls .Paused}}">
       {{if .Paused}}Paused{{else}}Active{{end}}

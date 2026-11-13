@@ -121,7 +121,6 @@ func (s *Server) renderPage(w http.ResponseWriter, name string, data any) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := t.ExecuteTemplate(w, "base.html", data); err != nil {
 		log.Printf("render page %s: %v", name, err)
-		http.Error(w, "template error", http.StatusInternalServerError)
 	}
 }
 
@@ -129,8 +128,9 @@ func (s *Server) renderPage(w http.ResponseWriter, name string, data any) {
 func (s *Server) render(w http.ResponseWriter, name string, data any) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := s.partial.ExecuteTemplate(w, name, data); err != nil {
+		// Template execution already started writing to w, so we can't change
+		// the status code. Log the error; the client gets a partial fragment.
 		log.Printf("render %s: %v", name, err)
-		http.Error(w, "template error", http.StatusInternalServerError)
 	}
 }
 

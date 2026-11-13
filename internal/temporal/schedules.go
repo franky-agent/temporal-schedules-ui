@@ -118,6 +118,18 @@ func (s *ScheduleService) Describe(ctx context.Context, id string) (*Detail, err
 	return d, nil
 }
 
+// DescribeSummary returns a strongly-consistent ScheduleSummary for one
+// schedule. Use this instead of List + filter when you need the freshest
+// state (e.g. right after a pause/unpause), since List is eventually
+// consistent.
+func (s *ScheduleService) DescribeSummary(ctx context.Context, id string) (ScheduleSummary, error) {
+	d, err := s.Describe(ctx, id)
+	if err != nil {
+		return ScheduleSummary{}, err
+	}
+	return d.ScheduleSummary, nil
+}
+
 // CreateInput is the form payload for creating a schedule.
 type CreateInput struct {
 	ID           string

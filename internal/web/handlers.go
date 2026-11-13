@@ -149,23 +149,17 @@ func (s *Server) handleDelete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-// renderRowByID re-fetches a single schedule's summary and renders its row.
+// renderRowByID fetches a single schedule via Describe (strongly consistent)
+// and renders its row. Used after pause/unpause/trigger so the row reflects
+// the new state immediately, since List is eventually consistent.
 func (s *Server) renderRowByID(w http.ResponseWriter, r *http.Request, id string) {
 	ctx, cancel := ctxFrom(r)
 	defer cancel()
 
-	all, err := s.svc.List(ctx)
+	sc, err := s.svc.DescribeSummary(ctx, id)
 	if err != nil {
 		s.renderErr(w, http.StatusBadGateway, err.Error())
 		return
 	}
-	for _, sc := range all {
-		if sc.ID == id {
-			s.render(w, "row.html", map[string]any{"S": sc})
-			return
-		}
-	}
-	// Not found → tell htmx to remove the row.
-	w.Header().Set("HX-Reswap", "delete")
-	w.WriteHeader(http.StatusOK)
+	s.render(w, "row.html", sc)
 }
