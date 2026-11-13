@@ -91,10 +91,7 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("GET /schedules/new", s.handleNewForm) // create form partial
 	s.mux.HandleFunc("POST /schedules", s.handleCreate)
 	s.mux.HandleFunc("GET /schedules/{id}", s.handleDetail)
-	s.mux.HandleFunc("POST /schedules/{id}/pause", s.handlePause)
-	s.mux.HandleFunc("POST /schedules/{id}/unpause", s.handleUnpause)
 	s.mux.HandleFunc("POST /schedules/{id}/trigger", s.handleTrigger)
-	s.mux.HandleFunc("DELETE /schedules/{id}", s.handleDelete)
 }
 
 // ListenAndServe starts the HTTP server on addr (default ":7099").

@@ -197,32 +197,6 @@ func (s *ScheduleService) Create(ctx context.Context, in CreateInput) error {
 	return nil
 }
 
-// Pause pauses a schedule.
-func (s *ScheduleService) Pause(ctx context.Context, id, note string) error {
-	opts := client.SchedulePauseOptions{}
-	if note != "" {
-		opts.Note = note
-	}
-	c, err := s.client()
-	if err != nil {
-		return err
-	}
-	return c.ScheduleClient().GetHandle(ctx, id).Pause(ctx, opts)
-}
-
-// Unpause resumes a schedule.
-func (s *ScheduleService) Unpause(ctx context.Context, id, note string) error {
-	opts := client.ScheduleUnpauseOptions{}
-	if note != "" {
-		opts.Note = note
-	}
-	c, err := s.client()
-	if err != nil {
-		return err
-	}
-	return c.ScheduleClient().GetHandle(ctx, id).Unpause(ctx, opts)
-}
-
 // Trigger fires one action immediately.
 func (s *ScheduleService) Trigger(ctx context.Context, id string) error {
 	c, err := s.client()
@@ -230,15 +204,6 @@ func (s *ScheduleService) Trigger(ctx context.Context, id string) error {
 		return err
 	}
 	return c.ScheduleClient().GetHandle(ctx, id).Trigger(ctx, client.ScheduleTriggerOptions{})
-}
-
-// Delete removes a schedule.
-func (s *ScheduleService) Delete(ctx context.Context, id string) error {
-	c, err := s.client()
-	if err != nil {
-		return err
-	}
-	return c.ScheduleClient().GetHandle(ctx, id).Delete(ctx)
 }
 
 // --- helpers ---

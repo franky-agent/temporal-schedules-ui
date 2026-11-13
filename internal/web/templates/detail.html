@@ -43,29 +43,10 @@
   {{end}}
 
   <div class="detail-actions">
-    {{if .D.Paused}}
-      <button class="btn btn-success btn-sm"
-              hx-post="/schedules/{{.D.ID}}/unpause"
-              hx-target="#row-{{.D.ID}}"
-              hx-swap="outerHTML"
-              onclick="this.closest('#detail-panel').innerHTML=''">▶ Unpause</button>
-    {{else}}
-      <button class="btn btn-warn btn-sm"
-              hx-post="/schedules/{{.D.ID}}/pause"
-              hx-target="#row-{{.D.ID}}"
-              hx-swap="outerHTML"
-              onclick="this.closest('#detail-panel').innerHTML=''">⏸ Pause</button>
-    {{end}}
     <button class="btn btn-sm"
             hx-post="/schedules/{{.D.ID}}/trigger"
             hx-target="#row-{{.D.ID}}"
             hx-swap="outerHTML">⚡ Trigger now</button>
-    <button class="btn btn-danger btn-sm"
-            hx-delete="/schedules/{{.D.ID}}"
-            hx-target="#row-{{.D.ID}}"
-            hx-swap="outerHTML"
-            hx-confirm="Delete schedule {{.D.ID}}?"
-            onclick="this.closest('#detail-panel').innerHTML=''">✕ Delete</button>
   </div>
 </div>
 {{end}}

@@ -18,30 +18,11 @@
   <td>{{if gt (len .RecentActions) 0}}{{ago (index .RecentActions 0)}}{{else}}—{{end}}</td>
   <td class="col-actions">
     <div class="action-group">
-      {{if .Paused}}
-        <button class="btn btn-xs btn-success"
-                hx-post="/schedules/{{.ID}}/unpause"
-                hx-target="#row-{{.ID}}"
-                hx-swap="outerHTML"
-                title="Resume">▶</button>
-      {{else}}
-        <button class="btn btn-xs btn-warn"
-                hx-post="/schedules/{{.ID}}/pause"
-                hx-target="#row-{{.ID}}"
-                hx-swap="outerHTML"
-                title="Pause">⏸</button>
-      {{end}}
       <button class="btn btn-xs"
               hx-post="/schedules/{{.ID}}/trigger"
               hx-target="#row-{{.ID}}"
               hx-swap="outerHTML"
               title="Trigger now">⚡</button>
-      <button class="btn btn-xs btn-danger"
-              hx-delete="/schedules/{{.ID}}"
-              hx-target="#row-{{.ID}}"
-              hx-swap="outerHTML"
-              hx-confirm="Delete schedule {{.ID}}?"
-              title="Delete">✕</button>
     </div>
   </td>
 </tr>

@@ -99,30 +99,6 @@ func (s *Server) handleDetail(w http.ResponseWriter, r *http.Request) {
 	s.renderPage(w, "detail_page.html", map[string]any{"D": d})
 }
 
-// POST /schedules/{id}/pause
-func (s *Server) handlePause(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := ctxFrom(r)
-	defer cancel()
-	id := r.PathValue("id")
-	if err := s.svc.Pause(ctx, id, r.FormValue("note")); err != nil {
-		s.renderErr(w, http.StatusBadGateway, err.Error())
-		return
-	}
-	s.renderRowByID(w, r, id)
-}
-
-// POST /schedules/{id}/unpause
-func (s *Server) handleUnpause(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := ctxFrom(r)
-	defer cancel()
-	id := r.PathValue("id")
-	if err := s.svc.Unpause(ctx, id, r.FormValue("note")); err != nil {
-		s.renderErr(w, http.StatusBadGateway, err.Error())
-		return
-	}
-	s.renderRowByID(w, r, id)
-}
-
 // POST /schedules/{id}/trigger
 func (s *Server) handleTrigger(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := ctxFrom(r)
@@ -135,23 +111,9 @@ func (s *Server) handleTrigger(w http.ResponseWriter, r *http.Request) {
 	s.renderRowByID(w, r, id)
 }
 
-// DELETE /schedules/{id}
-func (s *Server) handleDelete(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := ctxFrom(r)
-	defer cancel()
-	id := r.PathValue("id")
-	if err := s.svc.Delete(ctx, id); err != nil {
-		s.renderErr(w, http.StatusBadGateway, err.Error())
-		return
-	}
-	// htmx out-of-band: remove the row.
-	w.Header().Set("HX-Reswap", "delete")
-	w.WriteHeader(http.StatusOK)
-}
-
 // renderRowByID fetches a single schedule via Describe (strongly consistent)
-// and renders its row. Used after pause/unpause/trigger so the row reflects
-// the new state immediately, since List is eventually consistent.
+// and renders its row. Used after trigger so the row reflects the new
+// state immediately, since List is eventually consistent.
 func (s *Server) renderRowByID(w http.ResponseWriter, r *http.Request, id string) {
 	ctx, cancel := ctxFrom(r)
 	defer cancel()
